@@ -4,9 +4,7 @@ escuela = input("Escuela: ")
 conn = sqlite3.connect('big.db')
 cursor = conn.cursor()
 cursor.execute("create table if not exists escueladisponibles(escuelas unique)")
-q = f"insert or ignore into escueladisponibles values('{escuela}')"
-cursor.execute(q)
-conn.commit()
+cursor.execute("insert or ignore into escueladisponibles values(?)", [escuela])
 
 cursor.execute("select escuelas from escueladisponibles")
 print(cursor.fetchall())
@@ -20,4 +18,7 @@ while(True):
         print("na que ver")
     else:
         print("found")
+target = input("Borrar: ")
+cursor.execute("delete from escueladisponibles where escuelas = ?", [target])
+conn.commit()
 conn.close()

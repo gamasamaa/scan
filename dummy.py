@@ -4,46 +4,55 @@ def printp(printable):
     print(">>>", printable)
 
 def studentTableCreate():
-    exist = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name = 'estudiantes'")
-    temp = exist.fetchall()
-    if len(temp) == 0:
-        cursor.execute("create table estudiantes(id, nombre, grado, categoria)")
-        print("base de datos creadas")
-    else:
-        print("base de datos ya existe")
+    cursor.execute("create table if not exists estudiantes(id, nombre, grado, categoria)")
 
 def studentEntry():
     idt = input("ID del estudiante: ")
-    if idt == "":
-        return False
+    while len(idt) <= 0:
+        print("tienes que darme un id")
+        idt = input("ID del estudiante: ")
+
     nombret = input("Nombre completo del estudiante: ")
+    while len(nombret) <= 0:
+        print("tienes que darme un nombre")
+        nombret = input("nombre del estudiante: ")
+
     gradot = input("Grado del estudiante: ")
+    while len(gradot) <= 0:
+        print("tienes que darme un grado")
+        gradot = input("grado de estudiante:")
+
     categoriat = input("Categoria del estudiante: ")
-    q = cursor.execute(f'INSERT OR IGNORE INTO estudiantes VALUES("{idt}", "{nombret}","{gradot}","{categoriat}")')
+    while len(categoriat) <= 0:
+        print("tienes que darme una categoria")
+        categoriat = input("categoria:")
+
+    q = cursor.execute("insert or ignore into estudiantes values(?,?,?,?)", (idt, nombret, gradot, categoriat))
     printp("Entraste " + nombret + " " + gradot + " " + categoriat)
     return True
 
 def studentSearch():
     temp = input("Que estudiante busca?")
-    q = cursor.execute(f'SELECT * FROM estudiantes WHERE nombre = "{temp}"' )
+    q = cursor.execute("select * from estudiantes where nombre = ?", [temp])
     q1 = q.fetchone()
     print(q1)
 
 def studentDelete():
     target = input("Que estudiante quieres borrar: ")
-    cursor.execute(f'DELETE FROM estudiantes WHERE nombre = "{target}"')
+    cursor.execute("delete from estudiantes where nombre = ?", [target])
     
 def studentDelete():
     target = input("Que estudiante quieres borrar: ")
-    cursor.execute(f'DELETE FROM estudiantes WHERE nombre = "{target}"')
-    if cursor.execute(f'SELECT * FROM estudiantes WHERE nombre = "{target}"') == None:
-        print("Borraste a " + target + "exitosamente")
+    cursor.execute("delete from estudiantes where nombre = ?", [target])
+    result = cursor.execute("select * from estudiantes where nombre = ?", [target])
+    if result.fetchall() == []:
+        print("Borraste a " + target + " exitosamente")
     else:
         print("me pingue :P")
 
 school = input("Que escuela vas a trabajar: ")
 
-c = sqlite3.connect(f'{school}.db')
+c = sqlite3.connect(f"{school}.db")
 print(c)
 cursor = c.cursor()
 
