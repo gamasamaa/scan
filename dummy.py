@@ -1,4 +1,7 @@
 import sqlite3
+import csv
+from PyQt6.QtWidgets import QApplication, QWidget
+import sys
 
 def printp(printable):
     print(">>>", printable)
@@ -65,28 +68,28 @@ cursor = c.cursor()
 
 
 
-while True:
+# while True:
     
-    coso = input(">>> Que quieres hacer? \n\n Crear una base de datos, Buscar, Entrar un estudiante, Entrar mutiples estudiantes, Entrar multiples estudiantes desde un file, Borrar, Cerrar\n\n>>> ")
+#     coso = input(">>> Que quieres hacer? \n\n Crear una base de datos, Buscar, Entrar un estudiante, Entrar mutiples estudiantes, Entrar multiples estudiantes desde un file, Borrar, Cerrar\n\n>>> ")
     
-    match coso:
-        case "Crear una base de datos":
-            studentTableCreate()
-        case "Buscar":
-            studentSearch()
-        case "Entrar":
-            studentEntry()
-        case "Entrar multiples estudiantes":
-            while studentEntry():
-                print("fue añadido a la base de datos")
-        case "Entrar multiples estudiantes desde un file":
-            file = input("Nombre del file: ")
-            print(f'Estudiantes añadidos de {file}')
-        case "Borrar":
-            studentDelete()
-        case "Cerrar":
-            print("\nAdios my guy\n\nCerrar\n")
-            break
-        case _:
-            print("\nQue?\n")
-    c.commit()
+#     match coso:
+#         case "Crear una base de datos":
+#             studentTableCreate()
+#         case "Buscar":
+#             studentSearch()
+#         case "Entrar":
+#             studentEntry()
+#         case "Entrar multiples estudiantes":
+#             while studentEntry():
+#                 print("fue añadido a la base de datos")
+#         case "Entrar multiples estudiantes desde un file":
+#             file = input("Nombre del file: ")
+#             print(f'Estudiantes añadidos de {file}')
+#         case "Borrar":
+#             studentDelete()
+#         case "Cerrar":
+#             print("\nAdios my guy\n\nCerrar\n")
+#             break
+#         case _:
+#             print("\nQue?\n")
+#     c.commit()
