@@ -7,6 +7,6 @@ escuela = input("Escuela: ")
 conn = sqlite3.connect(f'{escuela}.db')
 c = conn.cursor()
 
-print(datetime.time.hour)
+print(datetime.datetime.now())
 # while True:
 #     dbworker.studentSearch(c)
