@@ -10,4 +10,14 @@ cursor.execute(q)
 conn.commit()
 cursor.execute("select escuelas from escueladisponibles")
 print(cursor.fetchall())
+while(True):
+    c = input('que:')
+    if c == 'x':
+        break
+    search = input("searching:")
+    cursor.execute(f"select escuelas from escueladisponibles where escuelas = '{search}' ")
+    if cursor.fetchall() == []:
+        print("na que ver")
+    else:
+        print("found")
 conn.close()
