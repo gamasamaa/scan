@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="database-container">
+    <div class="page-header">
+        <h1 data-i18n="db_management">Database Management</h1>
+        <p data-i18n="manage_db">Manage the student database</p>
+    </div>
+
+    <div class="stats-cards">
+        <div class="stat-card">
+            <h3 data-i18n="total_registered">Total Registered Students</h3>
+            <p class="stat-number">{{ total_students }}</p>
+        </div>
+    </div>
+
+    <!-- Export Data -->
+    <div class="card" id="export-section">
+        <h2 data-i18n="export_data">Export Data</h2>
+        <p data-i18n="export_desc">Download scan records as a CSV file for Excel analysis.</p>
+
+        <div class="quick-exports">
+            <button id="quick-export-breakfast" class="btn-secondary" data-i18n="today_breakfast">🌅 Today's Breakfast</button>
+            <button id="quick-export-lunch" class="btn-secondary" data-i18n="today_lunch">🍽 Today's Lunch</button>
+        </div>
+        
+        <hr class="export-divider">
+        
+        <p class="export-advanced-title" data-i18n="advanced_export">Advanced Export</p>
+        <form id="export-form" class="export-form" autocomplete="off">
+            <div class="export-fields">
+                <div class="field-group">
+                    <label for="export-start" data-i18n="start_date">Start Date</label>
+                    <input type="date" id="export-start" required>
+                </div>
+                <div class="field-group">
+                    <label for="export-end" data-i18n="end_date">End Date</label>
+                    <input type="date" id="export-end" required>
+                </div>
+                <div class="field-group">
+                    <label for="export-session" data-i18n="session">Session</label>
+                    <select id="export-session" class="field-select">
+                        <option value="all" data-i18n="all_sessions">All Sessions</option>
+                        <option value="breakfast" data-i18n="breakfast">Breakfast</option>
+                        <option value="lunch" data-i18n="lunch">Lunch</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary" data-i18n="export_button">Export to CSV</button>
+        </form>
+    </div>
+
+    <!-- Manual single student add -->
+    <div class="card" id="manual-add-section">
+        <h2 data-i18n="add_manual">Add a Student Manually</h2>
+        <p data-i18n="manual_desc">Use this to add a single student without a file. All fields are required.</p>
+
+        <form id="manual-add-form" class="manual-add-form" autocomplete="off">
+            <div class="manual-add-fields">
+                <div class="field-group">
+                    <label for="manual-id" data-i18n="id_col">Student ID</label>
+                    <input type="text" id="manual-id" data-i18n-placeholder="manual_id_placeholder" placeholder="e.g. 1042" required>
+                </div>
+                <div class="field-group">
+                    <label for="manual-name" data-i18n="full_name">Full Name</label>
+                    <input type="text" id="manual-name" data-i18n-placeholder="manual_name_placeholder" placeholder="e.g. María Torres" required>
+                </div>
+                <div class="field-group">
+                    <label for="manual-grade" data-i18n="grade_col">Grade</label>
+                    <select id="manual-grade" class="field-select" required>
+                        <option value="" disabled selected data-i18n="select_grade">Select Grade</option>
+                        <option value="Pre-K" data-i18n="pk">Pre-K</option>
+                        <option value="K" data-i18n="k">Kindergarten (K)</option>
+                        <option value="1" data-i18n="g1">1st Grade</option>
+                        <option value="2" data-i18n="g2">2nd Grade</option>
+                        <option value="3" data-i18n="g3">3rd Grade</option>
+                        <option value="4" data-i18n="g4">4th Grade</option>
+                        <option value="5" data-i18n="g5">5th Grade</option>
+                        <option value="6" data-i18n="g6">6th Grade</option>
+                        <option value="7" data-i18n="g7">7th Grade</option>
+                        <option value="8" data-i18n="g8">8th Grade</option>
+                        <option value="9" data-i18n="g9">9th Grade</option>
+                        <option value="10" data-i18n="g10">10th Grade</option>
+                        <option value="11" data-i18n="g11">11th Grade</option>
+                        <option value="12" data-i18n="g12">12th Grade</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label for="manual-category" data-i18n="category">Category</label>
+                    <input type="text" id="manual-category" data-i18n-placeholder="manual_cat_placeholder" placeholder="e.g. A" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary" id="manual-add-btn" data-i18n="add_student_button">Add Student</button>
+        </form>
+
+        <div id="manual-add-feedback" class="feedback-text hidden"></div>
+    </div>
+
+    <!-- Remove single student -->
+    <div class="card" id="remove-student-section">
+        <h2 data-i18n="remove_student">Remove a Student</h2>
+        <p data-i18n="remove_desc">Remove a student and all their scan history from the database.</p>
+
+        <form id="remove-student-form" class="manual-add-form" autocomplete="off">
+            <div class="manual-add-fields" style="grid-template-columns: 1fr;">
+                <div class="field-group">
+                    <label for="remove-query" data-i18n="remove_label">Student ID or Exact Name</label>
+                    <input type="text" id="remove-query" data-i18n-placeholder="remove_placeholder" placeholder="e.g. 1042 or María Torres" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary" id="remove-student-btn" data-i18n="remove_button" style="background-color: var(--error-color);">Remove Student</button>
+        </form>
+
+        <div id="remove-feedback" class="feedback-text hidden"></div>
+    </div>
+
+    <div class="upload-section card">
+
+        <h2 data-i18n="import_batch">Import Students (Batch Add)</h2>
+        <p data-i18n="import_desc">Upload a CSV or TXT file in the format: <code>ID, Name, Grade, Category</code></p>
+        <p class="note-text" data-i18n="import_note">Existing students will <strong>not</strong> be overwritten. Conflicts are reported below.</p>
+        
+        <form id="upload-form" class="upload-form">
+            <input type="file" id="csv-file" accept=".csv, .txt" class="file-input">
+            <button type="submit" class="btn-primary" id="upload-btn" data-i18n="upload_button">Upload & Add Students</button>
+        </form>
+        
+        <div id="upload-feedback" class="feedback-text hidden"></div>
+    </div>
+
+    <!-- Import Report — shown after upload -->
+    <div id="import-report" class="hidden">
+        <div id="report-added" class="report-section card hidden">
+            <h3 class="report-title success-title" data-i18n="report_added">✓ Added Successfully</h3>
+            <table class="scans-table">
+                <thead><tr><th data-i18n="id_col">ID</th><th data-i18n="name_col">Name</th><th data-i18n="grade_col">Grade</th></tr></thead>
+                <tbody id="report-added-body"></tbody>
+            </table>
+        </div>
+
+        <div id="report-skipped" class="report-section card hidden">
+            <h3 class="report-title success-title" data-i18n="report_skipped">ℹ Already in Database</h3>
+            <table class="scans-table">
+                <thead><tr><th data-i18n="id_col">ID</th><th data-i18n="name_col">Name</th><th data-i18n="grade_col">Grade</th></tr></thead>
+                <tbody id="report-skipped-body"></tbody>
+            </table>
+        </div>
+
+        <div id="report-failed" class="report-section card hidden">
+            <h3 class="report-title warning-title" data-i18n="report_failed">✖ ID Already Claimed</h3>
+            <p class="report-subtitle" data-i18n="report_failed_desc">These students could not be added because their ID is already used by someone else.</p>
+            <table class="scans-table">
+                <thead><tr><th data-i18n="id_col">ID</th><th data-i18n="current_student">Current Student</th><th data-i18n="new_student">New Student Attempt</th></tr></thead>
+                <tbody id="report-failed-body"></tbody>
+            </table>
+        </div>
+
+        <div id="report-invalid" class="report-section card hidden">
+            <h3 class="report-title error-title" data-i18n="report_invalid">⚠ Invalid / Skipped Rows</h3>
+            <p class="report-subtitle" data-i18n="report_invalid_desc">These rows had insufficient data and were skipped.</p>
+            <table class="scans-table">
+                <thead><tr><th data-i18n="row_col">Row #</th><th data-i18n="data_col">Data</th></tr></thead>
+                <tbody id="report-invalid-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}

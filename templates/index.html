@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="scanner-container">
+    <div class="scanner-header">
+        <h1 data-i18n="scanner_title">Student Scanner</h1>
+        <p data-i18n="scanner_subtitle">Select a session, then scan or enter an ID</p>
+    </div>
+
+    <!-- Session Tab Bar -->
+    <div class="session-tabs" role="tablist">
+        <button id="tab-breakfast" class="session-tab" data-session="breakfast" role="tab" aria-selected="false">
+            <span data-i18n="breakfast">🌅 Breakfast</span>
+            <span class="tab-count" id="count-breakfast">0</span>
+        </button>
+        <button id="tab-lunch" class="session-tab session-tab--active" data-session="lunch" role="tab" aria-selected="true">
+            <span data-i18n="lunch">🍽 Lunch</span>
+            <span class="tab-count" id="count-lunch">0</span>
+        </button>
+    </div>
+
+    <!-- Feedback Banner -->
+    <div id="feedback-banner" class="feedback-banner hidden">
+        <h2 id="feedback-message"></h2>
+        <p id="feedback-details"></p>
+    </div>
+
+    <!-- Scan Input -->
+    <div class="input-section">
+        <form id="scan-form">
+            <input type="text" id="scanner-input" class="scanner-input" data-i18n-placeholder="scan_input_placeholder" placeholder="Scan or type ID here..." autocomplete="off" autofocus>
+            <button type="submit" class="btn-primary" data-i18n="scan_button">Scan / Enter</button>
+        </form>
+    </div>
+
+    <!-- Breakfast Panel -->
+    <div id="panel-breakfast" class="session-panel hidden" role="tabpanel">
+        <div class="panel-header">
+            <h3 data-i18n="breakfast_panel_title">🌅 Breakfast — Today's Check-ins</h3>
+        </div>
+        <table class="scans-table">
+            <thead>
+                <tr>
+                    <th data-i18n="time_col">Time</th>
+                    <th data-i18n="id_col">ID</th>
+                    <th data-i18n="name_col">Name</th>
+                    <th data-i18n="grade_col">Grade</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-breakfast">
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+        <p id="empty-breakfast" class="empty-list-msg" data-i18n="empty_breakfast">No students scanned for breakfast yet.</p>
+    </div>
+
+    <!-- Lunch Panel -->
+    <div id="panel-lunch" class="session-panel" role="tabpanel">
+        <div class="panel-header">
+            <h3 data-i18n="lunch_panel_title">🍽 Lunch — Today's Check-ins</h3>
+        </div>
+        <table class="scans-table">
+            <thead>
+                <tr>
+                    <th data-i18n="time_col">Time</th>
+                    <th data-i18n="id_col">ID</th>
+                    <th data-i18n="name_col">Name</th>
+                    <th data-i18n="grade_col">Grade</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-lunch">
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+        <p id="empty-lunch" class="empty-list-msg" data-i18n="empty_lunch">No students scanned for lunch yet.</p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}

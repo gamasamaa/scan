@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunchtime Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">LunchScanner</div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link" data-i18n="scanner">Scanner</a>
+            <a href="{{ url_for('database_view') }}" class="nav-link" data-i18n="database">Database</a>
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="en" title="English">🇺🇸</button>
+                <button class="lang-btn" data-lang="es" title="Español">🇵🇷</button>
+            </div>
+        </div>
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

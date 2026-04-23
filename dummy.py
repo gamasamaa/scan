@@ -7,7 +7,7 @@ def printp(printable):
     print(">>>", printable)
 
 def studentTableCreate():
-    cursor.execute("create table if not exists estudiantes(id, nombre, grado, categoria)")
+    cursor.execute("create table if not exists estudiantes(id unique not null, nombre unique not null, grado not null, categoria not null)")
 
 def studentEntry():
     idt = input("ID del estudiante: ")
@@ -33,6 +33,14 @@ def studentEntry():
     q = cursor.execute("insert or ignore into estudiantes values(?,?,?,?)", (idt, nombret, gradot, categoriat))
     printp("Entraste " + nombret + " " + gradot + " " + categoriat)
     return True
+    
+def studentEntryCSV():
+    file = input("Nombre del file: ")
+    with open(file, newline='') as f:
+        reader = csv.reader(f, delimiter=',')
+        for row in reader:
+            cursor.execute("insert or ignore into estudiantes values(?,?,?,?)", row)
+    printp("Entraste " + file)
 
 def studentSearch():
     temp = input("Que estudiante busca?")
@@ -40,9 +48,9 @@ def studentSearch():
     q1 = q.fetchone()
     print(q1)
 
-def studentDelete():
-    target = input("Que estudiante quieres borrar: ")
-    cursor.execute("delete from estudiantes where nombre = ?", [target])
+# def studentDelete():
+#     target = input("Que estudiante quieres borrar: ")
+#     cursor.execute("delete from estudiantes where nombre = ?", [target])
     
 def studentDelete():
     target = input("Que estudiante quieres borrar: ")
@@ -56,7 +64,6 @@ def studentDelete():
 school = input("Que escuela vas a trabajar: ")
 
 c = sqlite3.connect(f"{school}.db")
-print(c)
 cursor = c.cursor()
 
 # data = [
@@ -68,28 +75,33 @@ cursor = c.cursor()
 
 
 
-# while True:
+while True:
     
-#     coso = input(">>> Que quieres hacer? \n\n Crear una base de datos, Buscar, Entrar un estudiante, Entrar mutiples estudiantes, Entrar multiples estudiantes desde un file, Borrar, Cerrar\n\n>>> ")
-    
-#     match coso:
-#         case "Crear una base de datos":
-#             studentTableCreate()
-#         case "Buscar":
-#             studentSearch()
-#         case "Entrar":
-#             studentEntry()
-#         case "Entrar multiples estudiantes":
-#             while studentEntry():
-#                 print("fue añadido a la base de datos")
-#         case "Entrar multiples estudiantes desde un file":
-#             file = input("Nombre del file: ")
-#             print(f'Estudiantes añadidos de {file}')
-#         case "Borrar":
-#             studentDelete()
-#         case "Cerrar":
-#             print("\nAdios my guy\n\nCerrar\n")
-#             break
-#         case _:
-#             print("\nQue?\n")
-#     c.commit()
+    coso = input(">>> Que quieres hacer? \n\n Crear una base de datos, Buscar, Entrar un estudiante, Entrar mutiples estudiantes, Entrar multiples estudiantes desde un file, Borrar, Cerrar\n\n>>> ")
+    coso = coso.lower()
+    match coso:
+        case "crear":
+            studentTableCreate()
+        case "buscar":
+            studentSearch()
+        case "entrar":
+            studentEntry()
+        case "entrarm":
+            control = input("añadir estudiante?")
+            while control != "no":
+                studentEntry()
+                control = input("añadir estudiante?")
+        case "entrarmf":
+            studentEntryCSV()
+        case "borrar":
+            studentDelete()
+        case "cerrar":
+            print("\nAdios my guy\n\nCerrar\n")
+            break
+        case "ver":
+            temp = cursor.execute("select * from estudiantes")
+            for i in temp:
+                print(i[1], i[0], i[2])
+        case _:
+            print("\nQue?\n")
+    c.commit()
